@@ -1,0 +1,25 @@
+{% extends "shell.twig" %}
+
+{% block body %}
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> {{ hub.name }}</h1>
+
+</header>
+
+{% for topic in topics %}
+    <div class="topic">
+        <div class="not-wanted">
+            <h2><a href="/m/{{ hub.slug }}/{{ topic.slug }}">&#x272D; {{ topic.title }}</a></h2>
+            <p>(<span>{{ topic.total_replies }}</span>) {{ topic.content|slice(0, 50) }}</p>
+        </div>
+        <p class="meta">
+            <span class="date">2 hours ago</span>
+            <span class="author">author</span>
+        </p>
+    </div>
+{% endfor %}
+
+<footer class="secondary">
+  
+</footer>
+{% endblock %}

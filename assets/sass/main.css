@@ -1,0 +1,42 @@
+body {
+    font-family: monospace;
+    background: #fff;
+    color: #000;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  a {
+    color: #000000;
+  }
+  h1 em {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 80%;
+  }
+  header.secondary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+  }
+  .topic {
+    margin-bottom: 1em;
+    overflow: hidden;
+  }
+  .topic h2 {
+    margin-top: 0;
+  }
+  .topic h2 a {
+    color: inherit;
+  }
+  .topic .not-wanted {
+    float: left;
+  }
+  .topic .meta {
+    margin-top: 0;
+    float: right;
+  }
+  .topic .author {
+    display: block;
+    font-weight: bold;
+  }
+  
