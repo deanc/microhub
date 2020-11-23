@@ -7,7 +7,11 @@
 <body>
 
 <nav class="user">
-    <a href="/login">Login</a> <em>/</em> <a href="/register">Register</a>
+    {% if user == null %}
+        <a href="/login">Login</a> <em>/</em> <a href="/register">Register</a>
+    {% else %}
+        <a href="/logout">Logout</a>
+    {% endif %}
 </nav>
 
 {% block body %}{% endblock %}
