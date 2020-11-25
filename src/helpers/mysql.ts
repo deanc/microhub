@@ -1,22 +1,18 @@
-const { create } = require("yallist");
+import config from "../config";
+import mysql, { Connection } from "mysql2/promise";
 
-const config = require("../config");
-const mysql = require("mysql2/promise");
-
-const fetchOne = async (conn, sql, params = []) => {
-  const [rows] = await conn.execute(sql, params);
+const fetchOne = async (conn: Connection, sql: string, params = []) => {
+  const [rows] = await conn.execute<any>(sql, params);
   if (rows.length) {
     return rows[0];
   }
   return null;
 };
 
-const fetchAll = async (conn, sql, params = []) => {
+const fetchAll = async (conn: Connection, sql: string, params = []) => {
   const [rows] = await conn.execute(sql, params);
   return rows;
 };
-
-const myConnection = null;
 
 const createConnection = () =>
   mysql.createPool({
