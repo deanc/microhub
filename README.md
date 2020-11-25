@@ -1,1 +1,7 @@
-README
+# Running
+
+```
+$ yarn install
+$ nodemon
+```
+
