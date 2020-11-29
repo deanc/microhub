@@ -61,3 +61,25 @@ body {
     font-weight: bold;
   }
   
+
+  
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .form-row {
+    margin-bottom: 1em;
+  }
+
+  .form-row .error {
+    color: darkred;
+  }
+
+  input {
+    font-family: monospace;
+  }
+  input[type="text"], input[type="password"], input[type="email"] {
+    padding: 5px 5px;
+  }

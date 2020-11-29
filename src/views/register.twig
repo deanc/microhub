@@ -1,0 +1,44 @@
+{% extends "shell.twig" %}
+
+{% block body %}
+
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> Register</h1>
+</header>
+
+<form action="/register" method="post">
+    <fieldset>
+        <div class="form-row">
+            <label>Email:</label>
+            <input type="text" name="email" value="{{ data["email"] }}" /><br/>
+            {% if errors["email"]|length > 0 %}
+                <div class="error">{{ errors["email"].join(", ") }}</div>
+            {% endif %}
+        </div>
+        <div class="form-row">
+            <label>Username:</label>
+            <input type="text" name="username" value="{{ data["username"] }}" maxlength="20" /><br/>
+            {% if errors["username"]|length > 0 %}
+                <div class="error">{{ errors["username"].join(", ") }}</div>
+            {% endif %}
+        </div>
+        <div class="form-row">
+            <label>Password:</label>
+            <input type="password" name="password" value="{{ data["password"] }}" />
+            {% if errors["password"]|length > 0 %}
+                <div class="error">{{ errors["password"].join(", ") }}</div>
+            {% endif %}
+        </div>
+        <div class="form-row">
+            <label>Confirm password:</label>
+            <input type="password" name="password_confirm" value="{{ data["password_confirm"] }}"/>
+            {% if errors["password_confirm"]|length > 0 %}
+                <div class="error">{{ errors["password_confirm"].join(", ") }}</div>
+            {% endif %}
+        </div>
+    </fieldset>
+	<div class="form-row">
+		<input type="submit" value="Submit"/>
+	</div>
+</form>
+{% endblock %}

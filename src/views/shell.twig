@@ -10,7 +10,7 @@
     {% if user == null %}
         <a href="/login">Login</a> <em>/</em> <a href="/register">Register</a>
     {% else %}
-        <a href="/account">Account Settings</a> <em>/</em> <a href="/logout">Logout</a>
+        <a href="/account">({{ user.username }})</a> <em>/</em> <a href="/logout">Logout</a>
     {% endif %}
 </nav>
 

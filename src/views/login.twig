@@ -1,17 +1,22 @@
 {% extends "shell.twig" %}
 
 {% block body %}
+
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> Login</h1>
+</header>
+
 <form action="/login" method="post">
-	<div>
-	<label>Username:</label>
-	<input type="text" name="email"/><br/>
+	<div class="form-row">
+		<label>Email:</label>
+		<input type="text" name="email"/><br/>
 	</div>
-	<div>
-	<label>Password:</label>
-	<input type="password" name="password"/>
+	<div class="form-row">
+		<label>Password:</label>
+		<input type="password" name="password"/>
 	</div>
-	<div>
-	<input type="submit" value="Submit"/>
+	<div class="form-row">
+		<input type="submit" value="Submit"/>
 	</div>
 </form>
 {% endblock %}
