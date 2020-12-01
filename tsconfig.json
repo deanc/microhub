@@ -1,16 +1,17 @@
 {
-    "extends": "@tsconfig/node14/tsconfig.json",
-    "compilerOptions": {
-      "preserveConstEnums": true,
-      "outDir": "dist/",
-      "allowJs": true
-    },
-    "ts-node": {
-        "files": true
-    },
-    "files": [
-        "src/definitions/*",
-    ],
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "**/*.spec.ts"]
-  }
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "outDir": "dist/",
+    "allowJs": true,
+    "strict": true,
+  },
+  "ts-node": {
+      "files": true
+  },
+  "files": [
+      "src/definitions/*",
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+}

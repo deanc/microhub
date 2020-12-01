@@ -30,6 +30,7 @@ export const localStrategy = new LocalStrategy(
     done(null, {
       id: dbUser.id,
       username: dbUser.username,
+      roles: dbUser.roles.split(","),
     })
   }
 )
@@ -52,6 +53,7 @@ export const userDeserializer = async (
     return cb(null, {
       id: dbUser.id,
       username: dbUser.username,
+      roles: dbUser.roles.split(","),
     })
   }
 

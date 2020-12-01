@@ -1,7 +1,11 @@
 import config from "../config"
-import mysql, { Connection } from "mysql2/promise"
+import mysql, { Pool } from "mysql2/promise"
 
-const fetchOne = async (conn: Connection, sql: string, params = []) => {
+export const fetchOne = async (
+  conn: Pool,
+  sql: string,
+  params: Array<string | number> = []
+): Promise<any> => {
   const [rows] = await conn.execute<any>(sql, params)
   if (rows.length) {
     return rows[0]
@@ -9,30 +13,31 @@ const fetchOne = async (conn: Connection, sql: string, params = []) => {
   return null
 }
 
-const fetchAll = async (conn: Connection, sql: string, params = []) => {
+export const fetchAll = async (
+  conn: Pool,
+  sql: string,
+  params: Array<string | number> = []
+): Promise<any> => {
   const [rows] = await conn.execute(sql, params)
   return rows
 }
 
-const createConnection = () =>
+export const createConnection = () =>
   mysql.createPool({
     host: config.DB_HOST,
     user: config.DB_USER,
     password: config.DB_PASSWORD,
     database: config.DB_NAME,
+    dateStrings: true,
   })
 
-const getConnection = () =>
+export const getConnection = () =>
   mysql.createConnection({
     host: config.DB_HOST,
     user: config.DB_USER,
     password: config.DB_PASSWORD,
     database: config.DB_NAME,
+    dateStrings: true,
   })
 
-module.exports = {
-  connection: createConnection(),
-  getConnection,
-  fetchOne,
-  fetchAll,
-}
+export const connection = createConnection()

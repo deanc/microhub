@@ -1,5 +1,7 @@
 import config from "./config"
-import express from "express"
+import express, { Request, Response } from "express"
+import compression from "compression"
+import CustomError from "./helpers/error"
 
 import redis from "redis"
 import session from "express-session"
@@ -27,20 +29,27 @@ import routeUserAccount from "./routes/user/account"
 
 import routeHubView from "./routes/hub/view"
 import routeTopicView from "./routes/topic/view"
+import { routeHubCreateGet } from "./routes/hub/create"
 
 // create session store
 let RedisStore = require("connect-redis")(session)
 const redisClient = redis.createClient()
 
 const app = express()
-const port = 3000
 
 // passport initialization
 passport.use(localStrategy)
 passport.serializeUser(userSerializer)
 passport.deserializeUser(userDeserializer)
 
+// add custom twig function(s)
+import { timeAgoInWords, mysqlToDate } from "./helpers/time"
+twig.extendFunction("timeAgoInWords", function (value) {
+  return timeAgoInWords(mysqlToDate(value))
+})
+
 const main = async () => {
+  app.use(compression())
   app.use(express.static(__dirname + "/public"))
   app.set("view engine", "twig")
   app.set("views", __dirname + "/views")
@@ -85,7 +94,22 @@ const main = async () => {
   app.get("/logout", ensureAuthenticated, routeUserLogout)
   app.get("/", routeHomepage)
   app.get("/m/:hub", routeHubView)
+  app.get("/hub/create", routeHubCreateGet)
   app.get("/m/:hub/:topic", routeTopicView)
+  app.post("/m/:hub/:topic", routeTopicView)
+
+  // error handle
+  app.use(function (err: Error, req: Request, res: Response, next: Function) {
+    if (err instanceof CustomError) {
+      res.status(err.code).render("error", {
+        message: err.message,
+      })
+    } else {
+      res.status(500).render("error", {
+        message: "Something went wrong",
+      })
+    }
+  })
 
   app.listen(config.APP_PORT, () => {
     console.log(`Microhub listening at http://localhost:${config.APP_PORT}`)
