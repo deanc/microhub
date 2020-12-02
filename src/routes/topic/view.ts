@@ -1,4 +1,7 @@
 import { Request, Response } from "express"
+import { User } from "../../definitions/express"
+import CustomError from "../../helpers/error"
+import { canViewHub } from "../../helpers/permissions"
 import { flattenErrors } from "../../helpers/validation"
 import { commentSchema } from "../../schemas/comment"
 import {
@@ -10,7 +13,7 @@ const { connection, fetchOne, fetchAll } = require("../../helpers/mysql")
 
 const formatDistance = require("date-fns/formatDistance")
 
-export default async (req: Request, res: Response) => {
+export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
   const data = req.body
   let errors: { [key: string]: Array<String> } = {}
@@ -19,6 +22,12 @@ export default async (req: Request, res: Response) => {
   const hub = await fetchOne(connection, "SELECT * FROM hub WHERE slug = ?", [
     req.params.hub,
   ])
+
+  // check permissions
+  const canView = await canViewHub(hub, <User>req.user)
+  if (!canView) {
+    return next(new CustomError(401, "Invalid permissions"))
+  }
 
   // topic
   const topic = await fetchOne(

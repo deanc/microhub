@@ -3,7 +3,7 @@ import { connection, fetchOne } from "./mysql"
 
 export const canViewHub = async (hub: any, user: User): Promise<boolean> => {
   // admins can view all
-  if (user.roles.includes("ADMIN")) {
+  if (user && user.roles.includes("ADMIN")) {
     return true
   }
 
