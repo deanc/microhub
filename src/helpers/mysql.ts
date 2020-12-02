@@ -1,4 +1,3 @@
-import config from "../config"
 import mysql, { Pool } from "mysql2/promise"
 
 export const fetchOne = async (
@@ -24,19 +23,19 @@ export const fetchAll = async (
 
 export const createConnection = () =>
   mysql.createPool({
-    host: config.DB_HOST,
-    user: config.DB_USER,
-    password: config.DB_PASSWORD,
-    database: config.DB_NAME,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     dateStrings: true,
   })
 
 export const getConnection = () =>
   mysql.createConnection({
-    host: config.DB_HOST,
-    user: config.DB_USER,
-    password: config.DB_PASSWORD,
-    database: config.DB_NAME,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     dateStrings: true,
   })
 

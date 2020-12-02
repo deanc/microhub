@@ -10,7 +10,8 @@
       "files": true
   },
   "files": [
-      "src/definitions/*",
+      "src/definitions/express.ts",
+      "src/definitions/express.request.d.ts"
   ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"],

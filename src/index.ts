@@ -1,4 +1,5 @@
-import config from "./config"
+require("dotenv").config({ path: __dirname + "/.env" })
+
 import express, { Request, Response } from "express"
 import compression from "compression"
 import CustomError from "./helpers/error"
@@ -32,8 +33,15 @@ import routeTopicView from "./routes/topic/view"
 import { routeHubCreateGet } from "./routes/hub/create"
 
 // create session store
+console.log(process.env)
 let RedisStore = require("connect-redis")(session)
-const redisClient = redis.createClient()
+let redisConfig: any = {
+  url: process.env.REDIS_URL,
+}
+if (process.env.REDIS_PASSWORD) {
+  redisConfig["password"] = process.env.REDIS_PASSWORD
+}
+const redisClient = redis.createClient(redisConfig)
 
 const app = express()
 
@@ -111,8 +119,10 @@ const main = async () => {
     }
   })
 
-  app.listen(config.APP_PORT, () => {
-    console.log(`Microhub listening at http://localhost:${config.APP_PORT}`)
+  app.listen(process.env.APP_PORT, () => {
+    console.log(
+      `Microhub listening at http://localhost:${process.env.APP_PORT}`
+    )
   })
 }
 
