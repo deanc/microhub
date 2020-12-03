@@ -11,9 +11,9 @@ export default async (req: Request, res: Response, next: Function) => {
   ])
 
   // check permissions
-  const isPrivate = hub.private
+  const isPrivate = !hub.public
   if (isPrivate) {
-    return next(new CustomError(401, "Invalid permissions"))
+    return next(new CustomError(404, "RSS feeds are only for public hubs"))
   }
 
   // topics
