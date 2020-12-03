@@ -29,6 +29,7 @@ import routeUserLogout from "./routes/user/logout"
 import routeUserAccount from "./routes/user/account"
 
 import routeHubView from "./routes/hub/view"
+import routeHubRSS from "./routes/hub/rss"
 import routeTopicView from "./routes/topic/view"
 import routeTopicCreate from "./routes/topic/create"
 import { routeHubCreateGet } from "./routes/hub/create"
@@ -103,6 +104,7 @@ const main = async () => {
   app.get("/logout", ensureAuthenticated, routeUserLogout)
   app.get("/", routeHomepage)
   app.get("/m/:hub", routeHubView)
+  app.get("/m/:hub/rss", routeHubRSS)
   app.get("/hub/create", routeHubCreateGet)
 
   app.get("/m/:hub/new", routeTopicCreate)
