@@ -30,6 +30,7 @@ import routeUserAccount from "./routes/user/account"
 
 import routeHubView from "./routes/hub/view"
 import routeTopicView from "./routes/topic/view"
+import routeTopicCreate from "./routes/topic/create"
 import { routeHubCreateGet } from "./routes/hub/create"
 
 // create session store
@@ -103,6 +104,10 @@ const main = async () => {
   app.get("/", routeHomepage)
   app.get("/m/:hub", routeHubView)
   app.get("/hub/create", routeHubCreateGet)
+
+  app.get("/m/:hub/new", routeTopicCreate)
+  app.post("/m/:hub/new", routeTopicCreate)
+
   app.get("/m/:hub/:topic", routeTopicView)
   app.post("/m/:hub/:topic", routeTopicView)
 

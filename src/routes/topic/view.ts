@@ -97,7 +97,7 @@ export default async (req: Request, res: Response, next: Function) => {
 
   console.log(errors)
 
-  res.render("topic.twig", {
+  res.render("topic/view", {
     hub,
     topic,
     comments,
