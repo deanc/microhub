@@ -10,7 +10,7 @@ export const localStrategy = new LocalStrategy(
   async (
     username: string,
     password: string,
-    done: (err: Error | null, user: User | boolean) => void
+    done: (err: Error | null, user: User | boolean, info?: any) => void
   ) => {
     const dbUser = await fetchOne(
       connection,
@@ -19,12 +19,12 @@ export const localStrategy = new LocalStrategy(
     )
 
     if (!dbUser) {
-      return done(null, false)
+      return done(null, false, { message: "Invalid credentials" })
     }
 
     const match = await bcrypt.compare(password, dbUser.password)
     if (!match) {
-      return done(null, false)
+      return done(null, false, { message: "Invalid credentials" })
     }
 
     done(null, {

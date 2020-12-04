@@ -6,6 +6,10 @@
   <h1><a href="/">&#8962;</a> <em>/</em> Login</h1>
 </header>
 
+{% if errors %}
+	<p class="error">{{ errors.join(", ") }}</p>
+{% endif %}
+
 <form action="/login" method="post">
 	<div class="form-row">
 		<label>Email:</label>

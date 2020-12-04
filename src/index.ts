@@ -2,6 +2,7 @@ require("dotenv").config({ path: __dirname + "/.env" })
 
 import express, { Request, Response } from "express"
 import compression from "compression"
+import flash from "connect-flash"
 import CustomError from "./helpers/error"
 
 import redis from "redis"
@@ -60,6 +61,7 @@ twig.extendFunction("timeAgoInWords", function (value) {
 
 const main = async () => {
   app.use(compression())
+  app.use(flash())
   app.use(express.static(__dirname + "/public"))
   app.set("view engine", "twig")
   app.set("views", __dirname + "/views")
@@ -93,7 +95,10 @@ const main = async () => {
   app.get("/login", routeUserLoginGet)
   app.post(
     "/login",
-    passport.authenticate("local", { failureRedirect: "/login" }),
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
     routeUserLoginPost
   )
 
@@ -114,17 +119,17 @@ const main = async () => {
   app.post("/m/:hub/:topic", routeTopicView)
 
   // error handle
-  app.use(function (err: Error, req: Request, res: Response, next: Function) {
-    if (err instanceof CustomError) {
-      res.status(err.code).render("error", {
-        message: err.message,
-      })
-    } else {
-      res.status(500).render("error", {
-        message: "Something went wrong",
-      })
-    }
-  })
+  // app.use(function (err: Error, req: Request, res: Response, next: Function) {
+  //   if (err instanceof CustomError) {
+  //     res.status(err.code).render("error", {
+  //       message: err.message,
+  //     })
+  //   } else {
+  //     res.status(500).render("error", {
+  //       message: "Something went wrong",
+  //     })
+  //   }
+  // })
 
   app.listen(process.env.APP_PORT, () => {
     console.log(
