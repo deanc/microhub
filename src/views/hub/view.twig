@@ -1,0 +1,60 @@
+{% extends "shell.twig" %}
+
+{% block body %}
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} {{ hub.name }}</h1>
+</header>
+
+
+<p>
+    <strong>Options:</strong> 
+    <a href="{{ url("topicCreate", {"hubId": hub.id, "slug": hub.slug}) }}">Create topic</a> <em class="s">/</em>
+    {% if not hub.public %}<a href="{{ url("hubLeave", {"hubId": hub.id, "slug": hub.slug}) }}">Leave hub</a> <em class="s">/</em>{% endif %}
+    {% if isAdmin and not hub.public %}<a href="{{ url("hubMembers", {"hubId": hub.id, "slug": hub.slug}) }}">Add members</a> <em class="s">/</em>{% endif %}
+    <a href="{{ url("hubRSS", {"hubId": hub.id, "slug": hub.slug}) }}">RSS</a></p>
+
+<hr />
+
+{% if topics|length %}
+{% for topic in topics %}
+    <div class="topic">
+        {# <div class="not-wanted"> #}
+            <h2>
+                <a class="preload" href="{{ url("topicView", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}">
+                    {% if topic.closed %}<s>{% endif %}
+                    {% if topic.starred %}&#x272D; {% endif %}{{ topic.title }}
+                    {% if topic.closed %}</s>{% endif %}
+                </a>
+            </h2>
+            <p class="desc">(<span>{{ topic.total_replies }}</span>) {{ topic.content|slice(0, 50) }}</p>
+        {# </div> #}
+        <p class="meta">
+            <span class="date">updated: {{ timeAgoInWords(topic.updated, user.timezone) }}</span>
+            <span class="author">{{ topic.last_poster }}</span>
+        </p>
+    </div>
+{% endfor %}
+{% else %}
+    <p>No topics yet</p>
+{% endfor %}
+
+    <hr />
+    <p>
+{% if staff|length > 0 %}
+    <strong>Staff:</strong>
+    {% for row in staff %}
+        {{ row.username }}
+    {% endfor %}
+    <em>/</em>
+{% endif %}
+{% if not hub.public %}
+    <strong>Members:</strong> {{ totalMembers }}
+    <em class="s">/</em>
+{% endif %}
+    <strong>Created:</strong> {{ timeAgoInWords(hub.created, user.timezone) }}
+</p>    
+
+<footer class="secondary">
+  
+</footer>
+{% endblock %}

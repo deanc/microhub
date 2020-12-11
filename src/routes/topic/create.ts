@@ -1,10 +1,11 @@
 import { Request, Response } from "express"
 import { User } from "../../definitions/express"
 import CustomError from "../../helpers/error"
-import { canViewHub } from "../../helpers/permissions"
+import { canViewHub, isHubAdmin } from "../../helpers/permissions"
 import { flattenErrors } from "../../helpers/validation"
 import { topicSchema } from "../../schemas/topic"
 import { createTopic, isDupeTopic, isTooSoonTopic } from "../../services/topic"
+import routes from "../../helpers/routes"
 
 const { connection, fetchOne, fetchAll } = require("../../helpers/mysql")
 
@@ -12,6 +13,10 @@ export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
   const data = req.body
   let errors: { [key: string]: Array<String> } = {}
+
+  if (!req.user) {
+    return next(new CustomError(401, "You must be logged in to create a topic"))
+  }
 
   // meta-data for hub
   const hub = await fetchOne(connection, "SELECT * FROM hub WHERE slug = ?", [
@@ -24,6 +29,8 @@ export default async (req: Request, res: Response, next: Function) => {
     return next(new CustomError(401, "Invalid permissions"))
   }
 
+  const isAdmin = await isHubAdmin(hub, <User>req.user)
+
   // handling new comment
   if (req.method === "POST" && req.user) {
     try {
@@ -31,7 +38,10 @@ export default async (req: Request, res: Response, next: Function) => {
       const isDupe = await isDupeTopic(hub.id, req.user.id, data.content)
       const isTooSoon = await isTooSoonTopic(hub.id, req.user.id)
 
-      console.log(isDupe, isTooSoon)
+      // non-admins can't star
+      if (data.starred && !isAdmin) {
+        return next(new CustomError(401, "Invalid permissions"))
+      }
 
       if (isDupe) {
         errors["content"] = ["Comment already exists"]
@@ -45,7 +55,8 @@ export default async (req: Request, res: Response, next: Function) => {
           hub.id,
           req.user.id,
           data.title,
-          data.content
+          data.content,
+          data.starred
         )
         const topicData = await fetchOne(
           connection,
@@ -53,7 +64,14 @@ export default async (req: Request, res: Response, next: Function) => {
           [topicId]
         )
         if (topicId) {
-          return res.redirect(`/m/${hub.slug}/${topicData.slug}`)
+          return res.redirect(
+            routes.topicView({
+              hubId: hub.id,
+              hubSlug: hub.slug,
+              topicId: topicId,
+              topicSlug: topicData.slug,
+            })
+          )
         }
       }
     } catch (e) {
@@ -64,6 +82,9 @@ export default async (req: Request, res: Response, next: Function) => {
 
   res.render("topic/create", {
     hub,
+    data,
     errors,
+    isAdmin,
+    csrfToken: req.csrfToken(),
   })
 }

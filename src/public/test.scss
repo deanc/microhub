@@ -1,0 +1,140 @@
+body {
+    font-family: courier, monospace;
+    font-size: 13px;
+    background: #fff;
+    color: #000;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1em;
+}
+
+a {
+  color: #000;
+}
+
+@mixin greySeperator {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 80%;
+}
+
+h1 em, nav em {
+  @include greySeperator;
+}
+
+h1 a:first-child {
+    text-decoration: none;
+}
+
+p, li {
+    line-height: 1.6em;
+}
+
+nav.user {
+    display: flex;
+    justify-content: flex-end;
+    padding: .5em 0;
+
+    em {
+        padding: 0 .75em;
+        font-size: inherit;
+    }
+}
+
+header.secondary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.topic {
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 0px 0px;
+    grid-template-areas:
+        "Title Title Title Meta"
+        "Description Description Description Description";
+
+  margin-bottom: 1em;
+
+
+  .not-wanted {
+    float: left;
+  }
+
+  h2 {
+    grid-area: Title;
+    margin-top: 0;
+    margin-bottom: 0;
+    a {
+        color: inherit;
+      }
+  }
+
+  .desc {
+    grid-area: Description;
+    margin-top: 0;
+  }
+
+  .meta {
+    grid-area: Meta;
+    margin-top: 0;
+    float: right;
+    text-align: right;
+  }
+
+  .author {
+    display: block;
+    font-weight: bold;
+  }
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.form-row {
+  margin-bottom: 1em;
+  .error {
+    color: darkred;
+  }
+}
+
+input {
+  font-family: monospace;
+}
+input[type="text"], input[type="password"], input[type="email"] {
+  padding: 5px 5px;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  line-height: 1px;
+  background: rgba(0,0,0,.5); color: rgba(0,0,0,.5);
+  margin: 2em 0;
+}
+
+.comment {
+  width: 100%;
+}
+
+em.s {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* dark mode */
+body.dark {
+  background: #121212;
+  color: #ddd;
+  a {
+    color: #ddd;
+  }
+  em.s, h1 em, nav em {
+    color: #BB86FC;
+  }
+}

@@ -24,3 +24,27 @@ export const canViewHub = async (hub: any, user: User): Promise<boolean> => {
   }
   return true
 }
+
+export const isHubAdmin = async (hub: any, user: User): Promise<boolean> => {
+  // admins can view all
+  if (user && user.roles.includes("ADMIN")) {
+    return true
+  }
+
+  // other users need normal check
+  if (!hub.public) {
+    if (!user) {
+      return false
+    } else {
+      const userCheck = await fetchOne(
+        connection,
+        "SELECT * FROM hub_user WHERE hubid = ? AND userid = ? AND staff = 1",
+        [hub.id, user.id]
+      )
+      if (userCheck) {
+        return true
+      }
+    }
+  }
+  return false
+}

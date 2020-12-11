@@ -5,7 +5,9 @@ import { flattenErrors } from "../../helpers/validation"
 import { createUser } from "../../services/user"
 
 export const routeUserRegisterGet = (req: Request, res: Response) => {
-  res.render("register")
+  res.render("user/register", {
+    csrfToken: req.csrfToken(),
+  })
 }
 
 const login = (req: Request, res: Response, user: User) => {
@@ -45,8 +47,9 @@ export const routeUserRegisterPost = async function (
     errors = flattenErrors(e.inner)
   }
 
-  res.render("register", {
+  res.render("user/register", {
     errors,
     data,
+    csrfToken: req.csrfToken(),
   })
 }

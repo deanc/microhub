@@ -70,5 +70,5 @@ export const ensureAuthenticated = (
   if (req.isAuthenticated()) {
     return next()
   }
-  res.redirect("/login")
+  res.redirect("/u/login")
 }

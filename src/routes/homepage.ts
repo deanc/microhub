@@ -9,7 +9,7 @@ export default async (req: Request, res: Response) => {
       connection,
       `
         SELECT
-          h.id, h.name, h.slug
+          h.id, h.name, h.slug, h.public
         FROM
           hub_user AS hu
         LEFT JOIN
@@ -21,8 +21,28 @@ export default async (req: Request, res: Response) => {
     )
   }
 
-  res.render("index.twig", {
+  const popularHubs = await fetchAll(
+    connection,
+    `
+    SELECT
+      COUNT(*) AS total, t.hubid, h.name, h.slug, h.public
+    FROM
+      topic AS t
+    LEFT JOIN
+      hub AS h ON h.id = t.hubid
+    WHERE
+      h.public = 1
+    GROUP BY
+      t.hubid
+    ORDER BY
+      total DESC
+    LIMIT 5
+  `
+  )
+
+  res.render("homepage", {
     message: "Hello World",
     privateHubs,
+    popularHubs,
   })
 }

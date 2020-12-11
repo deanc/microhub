@@ -1,8 +1,9 @@
 import { Request, Response } from "express"
 
 export const routeUserLoginGet = (req: Request, res: Response) => {
-  res.render("login", {
+  res.render("user/login", {
     errors: req.flash("error"),
+    csrfToken: req.csrfToken(),
   })
 }
 

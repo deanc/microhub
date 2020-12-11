@@ -6,7 +6,8 @@
   <h1><a href="/">&#8962;</a> <em>/</em> Register</h1>
 </header>
 
-<form action="/register" method="post">
+<form action="{{ url('userRegister') }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
     <fieldset>
         <div class="form-row">
             <label>Email:</label>

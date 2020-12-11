@@ -10,7 +10,8 @@
 	<p class="error">{{ errors.join(", ") }}</p>
 {% endif %}
 
-<form action="/login" method="post">
+<form action="{{ url('userLogin') }}" method="post">
+	<input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 	<div class="form-row">
 		<label>Email:</label>
 		<input type="text" name="email"/><br/>

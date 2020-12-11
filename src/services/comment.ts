@@ -12,6 +12,9 @@ export const createComment = async (
       "INSERT INTO comment (topicid, author, content, published, created, updated) VALUES (?, ?, ?, ?, NOW(), NOW())",
       [topicId, author, content, 1]
     )
+    await connection.query("UPDATE topic SET updated = NOW() WHERE id = ?", [
+      topicId,
+    ])
     return result[0].insertId
   } catch (e) {
     return false

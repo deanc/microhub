@@ -6,13 +6,14 @@ export const createTopic = async (
   hubId: number,
   author: number,
   title: string,
-  content: string
+  content: string,
+  starred: number
 ): Promise<false | number> => {
   try {
     const slug = slugify(title)
     const result = await connection.query(
-      "INSERT INTO topic (hubid, author, title, slug, content, published, created, updated) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())",
-      [hubId, author, title, slug, content, 1]
+      "INSERT INTO topic (hubid, author, title, slug, content, published, starred, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
+      [hubId, author, title, slug, content, 1, starred]
     )
     return result[0].insertId
   } catch (e) {

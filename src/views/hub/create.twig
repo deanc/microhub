@@ -5,5 +5,28 @@
   <h1><a href="/">&#8962;</a> <em>/</em> create your hub</h1>
 </header>
 
+{% if user %}
+  <form action="/hub/create" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" name="name" value="{{ data.name }}" />
+      {% if errors["name"]|length > 0 %}
+        <div class="error">{{ errors["name"].join(", ") }}</div>
+      {% endif %}
+    </div>
+    <div class="form-row">
+      <label>Public?</label>
+      <input type="radio" name="public" value="1" {% if data.public == 1 or data.public not defined %} checked{% endif %} /> Yes
+      <input type="radio" name="public" value="0" {% if data.public == 0 %} checked{% endif %} /> No
+    </div>
+    <div class="form-row">
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+{% else %}
+  <p>Please <a href="{{ url('userLogin') }}">login</a> or <a href="{{ url('userRegister') }}">register</a> to be able to create hubs</p>
+{% endif %}
+
 
 {% endblock %}

@@ -1,20 +1,33 @@
 import { Request, Response } from "express"
-import { connection, fetchOne, fetchAll } from "../../helpers/mysql"
+import {
+  connection,
+  fetchOne,
+  fetchAll,
+  fetchColumn,
+} from "../../helpers/mysql"
 import CustomError from "../../helpers/error"
 import { User } from "../../definitions/express"
-import { canViewHub } from "../../helpers/permissions"
+import { canViewHub, isHubAdmin } from "../../helpers/permissions"
 
 export default async (req: Request, res: Response, next: Function) => {
   // meta-data for hub
-  const hub = await fetchOne(connection, "SELECT * FROM hub WHERE slug = ?", [
-    req.params.hub,
-  ])
+  const hub = await fetchOne(
+    connection,
+    "SELECT * FROM hub WHERE id = ? AND slug = ?",
+    [req.params.id, req.params.hub]
+  )
+
+  if (!hub) {
+    return next(new CustomError(404, "Hub not found"))
+  }
 
   // check permissions
   const canView = await canViewHub(hub, <User>req.user)
   if (!canView) {
     return next(new CustomError(401, "Invalid permissions"))
   }
+
+  const isAdmin = await isHubAdmin(hub, <User>req.user)
 
   // staff
   const staff = await fetchAll(
@@ -32,6 +45,13 @@ export default async (req: Request, res: Response, next: Function) => {
     [hub.id]
   )
 
+  // total members
+  const totalMembers = await fetchColumn(
+    connection,
+    `SELECT COUNT(*) as total FROM hub_user WHERE hubid = ?`,
+    [hub.id]
+  )
+
   // topics
   const topics = await fetchAll(
     connection,
@@ -45,7 +65,6 @@ export default async (req: Request, res: Response, next: Function) => {
         LEFT JOIN (
             SELECT COUNT(*) as total, topicid
             FROM comment
-            WHERE topicid = ?
             GROUP BY topicid
         ) AS sq ON sq.topicid = t.id
         LEFT JOIN (
@@ -62,12 +81,14 @@ export default async (req: Request, res: Response, next: Function) => {
         ORDER BY
           t.starred DESC, t.created DESC
        `,
-    [hub.id, hub.id]
+    [hub.id]
   )
 
-  res.render("hub.twig", {
+  res.render("hub/view", {
     hub,
     topics,
     staff,
+    totalMembers,
+    isAdmin,
   })
 }

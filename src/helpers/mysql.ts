@@ -12,6 +12,18 @@ export const fetchOne = async (
   return null
 }
 
+export const fetchColumn = async (
+  conn: Pool,
+  sql: string,
+  params: Array<string | number> = []
+): Promise<any> => {
+  const [rows] = await conn.execute<any>(sql, params)
+  if (rows.length) {
+    return Object.values(rows[0])[0]
+  }
+  return null
+}
+
 export const fetchAll = async (
   conn: Pool,
   sql: string,

@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { User } from "../../definitions/express"
 import CustomError from "../../helpers/error"
 import { canViewHub } from "../../helpers/permissions"
+import routes from "../../helpers/routes"
 import { flattenErrors } from "../../helpers/validation"
 import { commentSchema } from "../../schemas/comment"
 import {
@@ -43,8 +44,12 @@ export default async (req: Request, res: Response, next: Function) => {
     [req.params.topic]
   )
 
+  if (!topic) {
+    return next(new CustomError(404, "Topic not found"))
+  }
+
   // handling new comment
-  if (req.method === "POST" && req.user) {
+  if (req.method === "POST" && req.user && !topic.closed) {
     try {
       const result = await commentSchema.validate(data, { abortEarly: false })
       const isDupe = await isDupeComment(topic.id, req.user.id, data.content)
@@ -67,7 +72,12 @@ export default async (req: Request, res: Response, next: Function) => {
         )
         if (commentId) {
           return res.redirect(
-            `/m/${hub.slug}/${topic.slug}#comment-${commentId}`
+            routes.topicView({
+              hubId: hub.id,
+              hubSlug: hub.slug,
+              topicId: topic.id,
+              topicSlug: topic.slug,
+            }) + `#comment-${commentId}`
           )
         }
       }
@@ -95,12 +105,11 @@ export default async (req: Request, res: Response, next: Function) => {
     [topic.id]
   )
 
-  console.log(errors)
-
   res.render("topic/view", {
     hub,
     topic,
     comments,
     errors,
+    csrfToken: req.csrfToken(),
   })
 }

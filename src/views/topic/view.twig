@@ -2,13 +2,16 @@
 
 {% block body %}
 <header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> <a href="/m/{{ hub.slug }}">{{ hub.name }}</a> <em>/</em> {{ topic.title }}</h1>
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} <a href="{{ url('hubView', {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a> <em>/</em> {{ topic.title }}</h1>
 </header>
 
+{% if topic.closed %}
+<p>This topic is closed</p>
+{% endif %}
 
 <p>
 <strong>{{ topic.username }}</strong> <em class="s">/</em> {{ timeAgoInWords(topic.created, user.timzeone) }}<br />
-{{ topic.content }}
+{{ topic.content|trim|nl2br }}
 </p>
 
 <hr />
@@ -26,12 +29,13 @@
 <p>There are no comments yet</p>
 {% endif %}
 
-{% if user.id %}
+{% if user.id and not topic.closed %}
 <h2 id="new-comment">Make new comment</h2>
-<form action="/m/{{ hub.slug }}/{{ topic.slug }}" method="post">
+<form action="{{ url("topicView", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}" method="post">
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <div class="form-row">
     <textarea name="content" class="comment" rows="7"></textarea>
-    <span class="error">{{ errors.content.join(",") }}</span>
+    {% if errors|length %}<span class="error">{{ errors.content.join(",") }}</span>{% endif %}
   </div>
   <div class="form-row">
     <button button type="submit">Submit</button>

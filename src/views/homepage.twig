@@ -1,0 +1,36 @@
+{% extends "shell.twig" %}
+
+{% block body %}
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> welcome to microhub</h1>
+</header>
+
+<p>Microhub allows you to create small micro-communities around any topic, whether it be your local football club or a particular interest group. "Hubs" can be public or private.</p>
+
+<h3>Our commitment</h3>
+<ul>
+  <li>Your data is not shared with third parties</li>
+  <li>If you own a hub, the data is yours to export and use as you wish</li>
+</ul>
+
+<p><a href="{{ url("hubCreate") }}">Create your hub</a></p>
+
+<hr />
+
+{% if privateHubs|length > 0 %}
+<h2>my hubs</h2>
+  <ul>
+    {% for hub in privateHubs %}
+      <li>{% if not hub.public %}&#128274; {% endif %}<a class="preload" href="{{ url("hubView", {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<h2>popular public hubs</h2>
+  <ul>
+    {% for hub in popularHubs %}
+      <li>{% if not hub.public %}&#128274; {% endif %}<a class="preload" href="{{ url("hubView", {"hubId": hub.hubid, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

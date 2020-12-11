@@ -2,13 +2,14 @@
 
 {% block body %}
 <header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> <a href="/m/{{ hub.slug }}">{{ hub.name }}</a> <em>/</em> create topic</h1>
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} <a href="{{ url('hubView', {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a> <em>/</em> create topic</h1>
 </header>
 
 
 <p>create topic</p>
 
-<form action="/m/{{ hub.slug }}/new" method="post">
+<form action="{{ url("topicCreate", {"hubId": hub.id, "slug": hub.slug}) }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
     <div class="form-row">
         <label>Title</label>
         <input name="title" type="text" value="{{ data.title }}" />
@@ -19,6 +20,15 @@
         <textarea name="content" rows="10">{{ data.content }}</textarea>
         <span class="error">{{ errors.content.join(",") }}</span>
     </div>
+    {% if isAdmin %}
+    <div class="form-row">
+      <label>Starred?</label>
+      <input type="radio" name="starred" value="1" {% if data.starred == 1 or data.starred not defined %} checked{% endif %} /> Yes
+      <input type="radio" name="starred" value="0" {% if data.starred == 0 %} checked{% endif %} /> No
+    </div>
+    {% else %}
+        <input type="hidden" name="starred" value="0" />
+    {% endif %}
     <div class="form-row">
         <button type="submit">Submit</button>
     </div>

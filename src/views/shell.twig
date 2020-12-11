@@ -2,19 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<link href="/test.css" rel="stylesheet" />
+<link href="/test.compiled.css" rel="stylesheet" />
+<title>MicroHub{% block title %}{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 
 <nav class="user">
     {% if user == null %}
-        <a href="/login">Login</a> <em>/</em> <a href="/register">Register</a>
+        <a href="{{ url("userLogin") }}">Login</a> <em>/</em> <a href="{{ url("userRegister") }}">Register</a>
     {% else %}
-        <a href="/account">({{ user.username }})</a> <em>/</em> <a href="/logout">Logout</a>
+        <a href="{{ url("userAccount") }}">({{ user.username }})</a> <em>/</em> <a href="{{ url("userLogout") }}">Logout</a>
     {% endif %}
 </nav>
 
+<div role="main">
 {% block body %}{% endblock %}
+</div>
+
+<hr />
+
+<footer>
+    <p>
+        This website is open source: <a href="https://github.com/deanc/microhub">https://github.com/deanc/microhub</a> | Privacy Policy
+    </p>
+</footer>
+
+<script>
+const links = document.querySelectorAll('a.preload')
+
+Array.from(links).forEach((link) => {
+
+    link.addEventListener("mouseenter", () => {
+        console.log("Preloading", link.href)
+        fetch(link.href, { cache: "force-cache" })
+
+    })
+
+})
+</script>
 
 </body>
 </html>

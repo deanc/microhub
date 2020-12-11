@@ -1,0 +1,37 @@
+{% extends "shell.twig" %}
+
+{% block body %}
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} {{ hub.name }} <em>/</em> Add Member</h1>
+</header>
+
+<h2>Add new member by username</h2>
+{% if messages %}<p>{{ messages }}</p>{% endif %}
+<form action={{ url('hubMembers', { "hubId": hub.id, "slug": hub.slug}) }} method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <div class="form-row">
+        <label>Username</label>
+        <input type="text" name="username" value="{{ data.username }}" />
+        {% if errors["username"]|length > 0 %}
+            <div class="error">{{ errors["username"].join(", ") }}</div>
+        {% endif %}
+    </div>
+    <div class="form-row">
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+<h2>Members</h2>
+{% if members|length > 0 %}
+<ul>
+{% for member in members %}
+    <li>{{ member.username }}{% if member.staff %} (admin){% endif %}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+
+<footer class="secondary">
+  
+</footer>
+{% endblock %}

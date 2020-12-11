@@ -3,6 +3,8 @@ require("dotenv").config({ path: __dirname + "/.env" })
 import express, { Request, Response } from "express"
 import compression from "compression"
 import flash from "connect-flash"
+import helmet from "helmet"
+import csrf from "csurf"
 import CustomError from "./helpers/error"
 
 import redis from "redis"
@@ -33,10 +35,13 @@ import routeHubView from "./routes/hub/view"
 import routeHubRSS from "./routes/hub/rss"
 import routeTopicView from "./routes/topic/view"
 import routeTopicCreate from "./routes/topic/create"
-import { routeHubCreateGet } from "./routes/hub/create"
+import routeHubCreate from "./routes/hub/create"
+import routeHubLeave from "./routes/hub/leave"
+import routeHubMembers from "./routes/hub/members"
+
+import routes from "./helpers/routes"
 
 // create session store
-console.log(process.env)
 let RedisStore = require("connect-redis")(session)
 let redisConfig: any = {
   url: process.env.REDIS_URL,
@@ -53,14 +58,26 @@ passport.use(localStrategy)
 passport.serializeUser(userSerializer)
 passport.deserializeUser(userDeserializer)
 
+// csrf protection
+const csrfProtection = csrf()
+
 // add custom twig function(s)
 import { timeAgoInWords, mysqlToDate } from "./helpers/time"
 twig.extendFunction("timeAgoInWords", function (value) {
   return timeAgoInWords(mysqlToDate(value))
 })
+twig.extendFunction("url", (routeName: string, params = {}): string => {
+  if (!routes[routeName]) {
+    throw new Error("invalid route")
+  }
+
+  const routeFunction = routes[routeName]
+  return routeFunction(params)
+})
 
 const main = async () => {
   app.use(compression())
+  app.use(helmet())
   app.use(flash())
   app.use(express.static(__dirname + "/public"))
   app.set("view engine", "twig")
@@ -83,6 +100,7 @@ const main = async () => {
 
   app.use(function (req, res, next) {
     res.locals.user = req.user
+    res.locals.routes = routes
     next()
   })
 
@@ -92,44 +110,53 @@ const main = async () => {
     autoescape: true,
   })
 
-  app.get("/login", routeUserLoginGet)
+  app.get("/u/login", csrfProtection, routeUserLoginGet)
   app.post(
-    "/login",
+    "/u/login",
+    csrfProtection,
     passport.authenticate("local", {
-      failureRedirect: "/login",
+      failureRedirect: "/u/login",
       failureFlash: true,
     }),
     routeUserLoginPost
   )
 
-  app.get("/register", routeUserRegisterGet)
-  app.post("/register", routeUserRegisterPost)
+  app.get("/u/register", csrfProtection, routeUserRegisterGet)
+  app.post("/u/register", csrfProtection, routeUserRegisterPost)
 
-  app.get("/account", ensureAuthenticated, routeUserAccount)
-  app.get("/logout", ensureAuthenticated, routeUserLogout)
+  app.get("/u/account", ensureAuthenticated, routeUserAccount)
+  app.get("/u/logout", ensureAuthenticated, routeUserLogout)
   app.get("/", routeHomepage)
-  app.get("/m/:hub", routeHubView)
-  app.get("/m/:hub/rss", routeHubRSS)
-  app.get("/hub/create", routeHubCreateGet)
+  app.get("/m/:hub-:id(\\d+)", routeHubView)
+  app.get("/m/:hub-:id(\\d+)/rss", routeHubRSS)
+  app.get("/hub/create", csrfProtection, routeHubCreate)
+  app.post("/hub/create", csrfProtection, routeHubCreate)
 
-  app.get("/m/:hub/new", routeTopicCreate)
-  app.post("/m/:hub/new", routeTopicCreate)
+  app.get("/m/:hub-:id(\\d+)/leave", csrfProtection, routeHubLeave)
+  app.post("/m/:hub-:id(\\d+)/leave", csrfProtection, routeHubLeave)
 
-  app.get("/m/:hub/:topic", routeTopicView)
-  app.post("/m/:hub/:topic", routeTopicView)
+  app.get("/m/:hub-:id(\\d+)/members", csrfProtection, routeHubMembers)
+  app.post("/m/:hub-:id(\\d+)/members", csrfProtection, routeHubMembers)
+
+  app.get("/m/:hub-:id(\\d+)/new", csrfProtection, routeTopicCreate)
+  app.post("/m/:hub-:id(\\d+)/new", csrfProtection, routeTopicCreate)
+
+  app.get("/m/:hub-:id(\\d+)/:topic-:id(\\d+)", csrfProtection, routeTopicView)
+  app.post("/m/:hub-:id(\\d+)/:topic-:id(\\d+)", csrfProtection, routeTopicView)
 
   // error handle
-  // app.use(function (err: Error, req: Request, res: Response, next: Function) {
-  //   if (err instanceof CustomError) {
-  //     res.status(err.code).render("error", {
-  //       message: err.message,
-  //     })
-  //   } else {
-  //     res.status(500).render("error", {
-  //       message: "Something went wrong",
-  //     })
-  //   }
-  // })
+  app.use(function (err: Error, req: Request, res: Response, next: Function) {
+    if (err instanceof CustomError) {
+      res.status(err.code).render("error", {
+        message: err.message,
+      })
+    } else {
+      console.log(err.message)
+      res.status(500).render("error", {
+        message: "Something went wrong",
+      })
+    }
+  })
 
   app.listen(process.env.APP_PORT, () => {
     console.log(
