@@ -33,6 +33,26 @@ export const fetchAll = async (
   return rows
 }
 
+export const update = async (
+  conn: Pool,
+  table: string,
+  values: { [key: string]: string | number },
+  conditions: { [key: string]: string | number }
+): Promise<boolean> => {
+  const queryFields = Object.keys(values)
+    .map((key) => `${key} = ?`)
+    .join(", ")
+
+  const queryConditions = Object.keys(conditions).map((key) => `${key} = ?`)
+
+  const query = `UPDATE ${table} SET ${queryFields} WHERE ${queryConditions}`
+  const params = [...Object.values(values), ...Object.values(conditions)]
+
+  connection.execute(query, params)
+
+  return true
+}
+
 export const createConnection = () =>
   mysql.createPool({
     host: process.env.DB_HOST,

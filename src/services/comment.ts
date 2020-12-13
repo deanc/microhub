@@ -45,10 +45,10 @@ export const isTooSoonComment = async (
   try {
     const result = await fetchOne(
       connection,
-      "SELECT id FROM comment WHERE topicid = ? AND author = ?",
+      "SELECT id FROM comment WHERE topicid = ? AND author = ? AND created > date_sub(now(), interval 5 minute) LIMIT 1",
       [topicId, author]
     )
-    return false
+    return result !== null
   } catch (e) {
     return false
   }

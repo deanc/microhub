@@ -5,6 +5,7 @@
   <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} {{ hub.name }}</h1>
 </header>
 
+<p>{{ hub.description }}</p>
 
 <p>
     <strong>Options:</strong> 
@@ -18,7 +19,7 @@
 {% if topics|length %}
 {% for topic in topics %}
     <div class="topic">
-        {# <div class="not-wanted"> #}
+        <div class="td">
             <h2>
                 <a class="preload" href="{{ url("topicView", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}">
                     {% if topic.closed %}<s>{% endif %}
@@ -26,10 +27,10 @@
                     {% if topic.closed %}</s>{% endif %}
                 </a>
             </h2>
-            <p class="desc">(<span>{{ topic.total_replies }}</span>) {{ topic.content|slice(0, 50) }}</p>
-        {# </div> #}
+            <p class="desc">(<span title="{{ topic.total_replies }} replies">{{ topic.total_replies }}</span>) {{ topic.content|slice(0, 50) }}</p>
+        </div>
         <p class="meta">
-            <span class="date">updated: {{ timeAgoInWords(topic.updated, user.timezone) }}</span>
+            <span class="date" title="{{ topic.updated }}">updated: {{ timeAgoInWords(topic.updated, user.timezone) }}</span>
             <span class="author">{{ topic.last_poster }}</span>
         </p>
     </div>

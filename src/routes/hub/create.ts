@@ -28,7 +28,12 @@ export default async (req: Request, res: Response, next: Function) => {
       // }
 
       if (result && !Object.keys(errors).length) {
-        const hubId = await createHub(req.user.id, data.name, data.public)
+        const hubId = await createHub(
+          req.user.id,
+          data.name,
+          data.description,
+          data.public
+        )
         if (hubId) {
           const hub = await fetchOne(
             connection,

@@ -47,7 +47,9 @@ export default async (req: Request, res: Response, next: Function) => {
         errors["content"] = ["Comment already exists"]
       }
       if (isTooSoon) {
-        errors["content"] = ["Try again in a minute"]
+        errors["content"] = [
+          "Try again in a few minutes. You're posting too often.",
+        ]
       }
 
       if (result && !Object.keys(errors).length) {

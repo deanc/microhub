@@ -11,7 +11,7 @@
 
 <p>
 <strong>{{ topic.username }}</strong> <em class="s">/</em> {{ timeAgoInWords(topic.created, user.timzeone) }}<br />
-{{ topic.content|trim|nl2br }}
+{{ topic.content|trim|raw }}
 </p>
 
 <hr />
@@ -22,7 +22,7 @@
   {% for comment in comments %}
     <p id="comment-{{ comment.id }}">
       <strong>{{comment.username}}</strong> <em class="s">/</em> {{ timeAgoInWords(comment.created, user.timezone) }}<br />
-      {{ comment.content|trim|nl2br }}
+      {{ comment.content|trim|raw }}
     </p>
   {% endfor %}
 {% else %}
@@ -34,7 +34,7 @@
 <form action="{{ url("topicView", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}" method="post">
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <div class="form-row">
-    <textarea name="content" class="comment" rows="7"></textarea>
+    <textarea name="content" class="comment" rows="7">{{ data.content }}</textarea>
     {% if errors|length %}<span class="error">{{ errors.content.join(",") }}</span>{% endif %}
   </div>
   <div class="form-row">

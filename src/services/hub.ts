@@ -5,14 +5,15 @@ const { connection, fetchOne } = require("../helpers/mysql")
 export const createHub = async (
   creator: number,
   name: string,
+  description: string,
   isPublic: number
 ): Promise<false | number> => {
   try {
     // create the hub
     const slug = slugify(name)
     const result = await connection.query(
-      "INSERT INTO hub (creator, name, slug, public, published, created, updated) VALUES (?, ?, ?, ?, 1, NOW(), NOW())",
-      [creator, name, slug, isPublic]
+      "INSERT INTO hub (creator, name, description, slug, public, published, created, updated) VALUES (?, ?, ?, ?, 1, NOW(), NOW())",
+      [creator, name, description, slug, isPublic]
     )
 
     const hubId = result[0].insertId

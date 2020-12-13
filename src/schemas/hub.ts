@@ -29,5 +29,6 @@ const uniqueHubName = Yup.string()
 
 export const hubSchema = Yup.object({
   name: uniqueHubName,
+  description: Yup.string().max(255).required(),
   public: Yup.number().min(0).max(1).required(),
 }).defined()

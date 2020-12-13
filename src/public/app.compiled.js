@@ -1,0 +1,1 @@
+const throttle=(e,r=50,t=window)=>{let l,o=!1;return(...n)=>{o||(e.apply(t,n),o=!0,l=setTimeout(()=>{o=!1},r))}},links=document.querySelectorAll("a.preload"),preload=throttle(e=>{fetch(e.href,{cache:"force-cache"})},750);Array.from(links).forEach(e=>{e.addEventListener("mouseenter",preload.bind(null,e))});

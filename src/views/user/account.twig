@@ -1,9 +1,35 @@
 {% extends "shell.twig" %}
 
 {% block body %}
-<header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> {{ user.username }}</h1>
-</header>
+  <header class="secondary">
+    <h1><a href="/">&#8962;</a> <em>/</em> {{ user.username }}</h1>
+  </header>
 
-<p>Profile page coming soon...</p>
+  <form method="post">
+    <p>To change any information below please enter your current password:</p>
+    <input type="password" name="currentpassword" value="{{ data.currentpassword }}" />
+    {% if errors["currentpassword"]|length > 0 %}
+      <div class="error">{{ errors["currentpassword"].join(", ") }}</div>
+    {% endif %}
+
+    <h2>Change password</h2>
+    <div class="form-row">
+      <label>New password:</label><input type="password" name="newpassword" value="{{ data.newpassword }}" />
+    </div>
+    {% if errors["newpassword"]|length > 0 %}
+      <div class="error">{{ errors["newpassword"].join(", ") }}</div>
+    {% endif %}
+
+    <h2>Change email</h2>
+    <div class="form-row">
+      <label>Email</label><input type="email" name="email" value="{{ data.email }}" />
+    </div>
+    {% if errors["email"]|length > 0 %}
+      <div class="error">{{ errors["email"].join(", ") }}</div>
+    {% endif %}
+
+    <div class="form-row">
+      <input type="submit" name="submit" value="Submit" />
+    </div>
+  </form>
 {% endblock %}

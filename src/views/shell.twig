@@ -28,18 +28,7 @@
     </p>
 </footer>
 
-<script>
-const links = document.querySelectorAll('a.preload')
-
-Array.from(links).forEach((link) => {
-
-    link.addEventListener("mouseenter", () => {
-        console.log("Preloading", link.href)
-        fetch(link.href, { cache: "force-cache" })
-
-    })
-
-})
+<script src="/app.compiled.js">
 </script>
 
 </body>

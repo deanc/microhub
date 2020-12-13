@@ -39,7 +39,7 @@ import routeHubCreate from "./routes/hub/create"
 import routeHubLeave from "./routes/hub/leave"
 import routeHubMembers from "./routes/hub/members"
 
-import routes from "./helpers/routes"
+import routes, { hubPrefix } from "./helpers/routes"
 
 // create session store
 let RedisStore = require("connect-redis")(session)
@@ -125,24 +125,42 @@ const main = async () => {
   app.post("/u/register", csrfProtection, routeUserRegisterPost)
 
   app.get("/u/account", ensureAuthenticated, routeUserAccount)
+  app.post("/u/account", ensureAuthenticated, routeUserAccount)
+
   app.get("/u/logout", ensureAuthenticated, routeUserLogout)
   app.get("/", routeHomepage)
-  app.get("/m/:hub-:id(\\d+)", routeHubView)
-  app.get("/m/:hub-:id(\\d+)/rss", routeHubRSS)
-  app.get("/hub/create", csrfProtection, routeHubCreate)
-  app.post("/hub/create", csrfProtection, routeHubCreate)
+  app.get(`/${hubPrefix}/:hub-:id(\\d+)`, routeHubView)
+  app.get(`/${hubPrefix}/:hub-:id(\\d+)/rss`, routeHubRSS)
+  app.get(`/hub/create`, csrfProtection, routeHubCreate)
+  app.post(`/hub/create`, csrfProtection, routeHubCreate)
 
-  app.get("/m/:hub-:id(\\d+)/leave", csrfProtection, routeHubLeave)
-  app.post("/m/:hub-:id(\\d+)/leave", csrfProtection, routeHubLeave)
+  app.get(`/${hubPrefix}/:hub-:id(\\d+)/leave`, csrfProtection, routeHubLeave)
+  app.post(`/${hubPrefix}/:hub-:id(\\d+)/leave`, csrfProtection, routeHubLeave)
 
-  app.get("/m/:hub-:id(\\d+)/members", csrfProtection, routeHubMembers)
-  app.post("/m/:hub-:id(\\d+)/members", csrfProtection, routeHubMembers)
+  app.get(
+    `/${hubPrefix}/:hub-:id(\\d+)/members`,
+    csrfProtection,
+    routeHubMembers
+  )
+  app.post(
+    `/${hubPrefix}/:hub-:id(\\d+)/members`,
+    csrfProtection,
+    routeHubMembers
+  )
 
-  app.get("/m/:hub-:id(\\d+)/new", csrfProtection, routeTopicCreate)
-  app.post("/m/:hub-:id(\\d+)/new", csrfProtection, routeTopicCreate)
+  app.get(`/${hubPrefix}/:hub-:id(\\d+)/new`, csrfProtection, routeTopicCreate)
+  app.post(`/${hubPrefix}/:hub-:id(\\d+)/new`, csrfProtection, routeTopicCreate)
 
-  app.get("/m/:hub-:id(\\d+)/:topic-:id(\\d+)", csrfProtection, routeTopicView)
-  app.post("/m/:hub-:id(\\d+)/:topic-:id(\\d+)", csrfProtection, routeTopicView)
+  app.get(
+    `/${hubPrefix}/:hub-:id(\\d+)/:topic-:id(\\d+)`,
+    csrfProtection,
+    routeTopicView
+  )
+  app.post(
+    `/${hubPrefix}/:hub-:id(\\d+)/:topic-:id(\\d+)`,
+    csrfProtection,
+    routeTopicView
+  )
 
   // error handle
   app.use(function (err: Error, req: Request, res: Response, next: Function) {

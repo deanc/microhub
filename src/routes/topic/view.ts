@@ -12,7 +12,9 @@ import {
 } from "../../services/comment"
 const { connection, fetchOne, fetchAll } = require("../../helpers/mysql")
 
-const formatDistance = require("date-fns/formatDistance")
+import Autolinker from "autolinker"
+import { options as autoLinkerOptions } from "../../helpers/autolinker"
+import { nl2br, parseUserContent, purify } from "../../helpers/escaper"
 
 export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
@@ -44,6 +46,8 @@ export default async (req: Request, res: Response, next: Function) => {
     [req.params.topic]
   )
 
+  topic.content = parseUserContent(topic.content)
+
   if (!topic) {
     return next(new CustomError(404, "Topic not found"))
   }
@@ -55,13 +59,13 @@ export default async (req: Request, res: Response, next: Function) => {
       const isDupe = await isDupeComment(topic.id, req.user.id, data.content)
       const isTooSoon = await isTooSoonComment(topic.id, req.user.id)
 
-      console.log(isDupe, isTooSoon)
-
       if (isDupe) {
         errors["content"] = ["Comment already exists"]
       }
       if (isTooSoon) {
-        errors["content"] = ["Try again in a minute"]
+        errors["content"] = [
+          "Try again in a few minutes. You are commenting too often.",
+        ]
       }
 
       if (result && !Object.keys(errors).length) {
@@ -105,11 +109,17 @@ export default async (req: Request, res: Response, next: Function) => {
     [topic.id]
   )
 
+  const filteredComments = comments.map((comment: any) => {
+    comment.content = parseUserContent(comment.content)
+    return comment
+  })
+
   res.render("topic/view", {
     hub,
     topic,
-    comments,
+    comments: filteredComments,
     errors,
+    data,
     csrfToken: req.csrfToken(),
   })
 }
