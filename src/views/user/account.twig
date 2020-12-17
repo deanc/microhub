@@ -28,7 +28,12 @@
       <div class="error">{{ errors["email"].join(", ") }}</div>
     {% endif %}
 
+    <h2>Settings</h2>
     <div class="form-row">
+      <label>Dark mode? </label><input type="checkbox" name="dark_mode" value="1" {% if data.dark_mode == 1 %}checked{% endif %} />
+    </div>
+
+    <div class="submit-row">
       <input type="submit" name="submit" value="Submit" />
     </div>
   </form>

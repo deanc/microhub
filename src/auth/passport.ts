@@ -31,6 +31,9 @@ export const localStrategy = new LocalStrategy(
       id: dbUser.id,
       username: dbUser.username,
       roles: dbUser.roles.split(","),
+      settings: {
+        dark_mode: dbUser.dark_mode,
+      },
     })
   }
 )
@@ -54,6 +57,9 @@ export const userDeserializer = async (
       id: dbUser.id,
       username: dbUser.username,
       roles: dbUser.roles.split(","),
+      settings: {
+        dark_mode: dbUser.dark_mode,
+      },
     })
   }
 

@@ -96,6 +96,9 @@ fieldset {
     color: darkred;
   }
 }
+.submit-row {
+  margin-top: 2em;
+}
 
 input {
   font-family: monospace;
@@ -108,7 +111,7 @@ hr {
   border: 0;
   height: 1px;
   line-height: 1px;
-  background: rgba(0,0,0,.5); color: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.5);
   margin: 2em 0;
 }
 
@@ -129,5 +132,18 @@ body.dark {
   }
   em.s, h1 em, nav em {
     color: #BB86FC;
+  }
+  button, input[type="submit"], input[type="text"],input[type="email"],input[type="password"], textarea {
+    background: #333;
+    color: #fff;
+    border: 1px solid #666;
+  }
+  button, input[type="submit"] {
+    border: 0;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+  hr {
+    background: rgba(255, 255, 255, .5);
   }
 }

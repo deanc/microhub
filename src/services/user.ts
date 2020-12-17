@@ -20,6 +20,9 @@ export const createUser = async (
       id: result[0].insertId,
       username,
       roles: ["USER"],
+      settings: {
+        dark_mode: 0,
+      },
     }
   } catch (e) {
     return false
@@ -29,16 +32,19 @@ export const createUser = async (
 export const updateProfile = async (
   userId: number,
   password: string,
-  email: string
+  email: string,
+  darkMode: boolean
 ): Promise<boolean> => {
   try {
     const hash = await bcrypt.hash(password, 10)
 
-    const fields: { [key: string]: string | number } = {}
-    if (password.length) {
+    const fields: { [key: string]: string | number } = {
+      dark_mode: darkMode ? 1 : 0,
+    }
+    if (password && password.length) {
       fields.password = password
     }
-    if (email.length) {
+    if (email && email.length) {
       fields.email = email
     }
 
@@ -47,6 +53,7 @@ export const updateProfile = async (
     })
     return true
   } catch (e) {
+    console.log(e)
     return false
   }
 }

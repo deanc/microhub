@@ -6,6 +6,18 @@ import { flattenErrors } from "../../helpers/validation"
 import { conditionalUserAccountSchema } from "../../schemas/user"
 import { updateProfile } from "../../services/user"
 import routes from "../../helpers/routes"
+import { User } from "../../definitions/express"
+
+const login = (req: Request, res: Response, user: User) => {
+  new Promise((resolve, reject) => {
+    req.login(user, (err) => {
+      if (err) {
+        return reject(err)
+      }
+      resolve(user)
+    })
+  })
+}
 
 export default async (req: Request, res: Response, next: Function) => {
   if (!req.user) {
@@ -18,7 +30,7 @@ export default async (req: Request, res: Response, next: Function) => {
   const userData = await fetchOne(
     connection,
     `
-    SELECT email,password FROM user WHERE id = ?
+    SELECT email,password,dark_mode FROM user WHERE id = ?
   `,
     [req.user.id]
   )
@@ -59,9 +71,13 @@ export default async (req: Request, res: Response, next: Function) => {
         const success = await updateProfile(
           req.user.id,
           data.newpassword.length ? data.newpassword : "",
-          data.email
+          data.email,
+          data.dark_mode == 1
         )
         if (success) {
+          let updateUser = req.user
+          updateUser.settings.dark_mode = data.dark_mode == 1 ? 1 : 0
+          const userLogin = await login(req, res, updateUser)
           return res.redirect(routes.userAccount())
         }
       }
@@ -74,6 +90,10 @@ export default async (req: Request, res: Response, next: Function) => {
   const templateData = {
     ...userData,
     ...data,
+  }
+
+  if (req.method === "POST" && !data.dark_mode) {
+    delete templateData.dark_mode
   }
 
   res.render("user/account", {

@@ -10,7 +10,7 @@ export const routeUserRegisterGet = (req: Request, res: Response) => {
   })
 }
 
-const login = (req: Request, res: Response, user: User) => {
+export const login = (req: Request, res: Response, user: User) => {
   new Promise((resolve, reject) => {
     req.login(user, (err) => {
       if (err) {
