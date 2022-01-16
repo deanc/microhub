@@ -33,8 +33,8 @@
     {% if isAdmin %}
     <div class="form-row">
       <label>Starred?</label>
-      <input type="radio" name="starred" value="1" {% if data.starred == 1 or data.starred not defined %} checked{% endif %} /> Yes
-      <input type="radio" name="starred" value="0" {% if data.starred == 0 %} checked{% endif %} /> No
+      <input type="radio" name="starred" value="1" {% if data.starred == 1 %} checked{% endif %} /> Yes
+      <input type="radio" name="starred" value="0" {% if data.starred == 0 or data.starred not defined %} checked{% endif %} /> No
     </div>
     {% else %}
         <input type="hidden" name="starred" value="0" />
