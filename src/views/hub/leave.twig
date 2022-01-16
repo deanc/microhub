@@ -1,5 +1,15 @@
 {% extends "shell.twig" %}
 
+{% block head %}
+{% if hub.accent_hex|length %}
+<style type="text/css">
+.s, nav em, h1 em {
+    color: #{{ hub.accent_hex }} !important;
+}
+</style>
+{% endif %}
+{% endblock %}
+
 {% block body %}
 <header class="secondary">
   <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} {{ hub.name }} <em>/</em> Leave Hub</h1>

@@ -22,7 +22,7 @@
 <h2>my hubs</h2>
   <ul>
     {% for hub in privateHubs %}
-      <li>{% if not hub.public %}&#128274; {% endif %}<a class="preload" href="{{ url("hubView", {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
+      <li>{% if not hub.public %}<span title="private">&#128274;</span> {% endif %}<a class="preload" href="{{ url("hubView", {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
     {% endfor %}
   </ul>
 {% endif %}
