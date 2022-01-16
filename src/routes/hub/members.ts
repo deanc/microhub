@@ -12,6 +12,7 @@ import routes from "../../helpers/routes"
 import { hubMemberSchema } from "../../schemas/hubMember"
 import { flattenErrors } from "../../helpers/validation"
 import { addMember } from "../../services/hub"
+import { ValidationError } from "yup"
 
 export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
@@ -97,7 +98,7 @@ export default async (req: Request, res: Response, next: Function) => {
       }
     } catch (e) {
       console.log(e)
-      errors = flattenErrors(e.inner)
+      errors = flattenErrors((e as ValidationError).inner)
     }
   }
 

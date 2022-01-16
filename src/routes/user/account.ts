@@ -7,6 +7,7 @@ import { conditionalUserAccountSchema } from "../../schemas/user"
 import { updateProfile } from "../../services/user"
 import routes from "../../helpers/routes"
 import { User } from "../../definitions/express"
+import { ValidationError } from "yup"
 
 const login = (req: Request, res: Response, user: User) => {
   new Promise((resolve, reject) => {
@@ -83,7 +84,7 @@ export default async (req: Request, res: Response, next: Function) => {
       }
     } catch (e) {
       console.log(e)
-      errors = flattenErrors(e.inner)
+      errors = flattenErrors((e as ValidationError).inner)
     }
   }
 

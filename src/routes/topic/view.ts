@@ -15,6 +15,7 @@ const { connection, fetchOne, fetchAll } = require("../../helpers/mysql")
 import Autolinker from "autolinker"
 import { options as autoLinkerOptions } from "../../helpers/autolinker"
 import { nl2br, parseUserContent, purify } from "../../helpers/escaper"
+import { ValidationError } from "yup"
 
 export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
@@ -87,7 +88,7 @@ export default async (req: Request, res: Response, next: Function) => {
       }
     } catch (e) {
       console.log(e)
-      errors = flattenErrors(e.inner)
+      errors = flattenErrors((e as ValidationError).inner)
     }
   }
 

@@ -3,6 +3,7 @@ import { User } from "../../definitions/express"
 import { userSchema } from "../../schemas/user"
 import { flattenErrors } from "../../helpers/validation"
 import { createUser } from "../../services/user"
+import { ValidationError } from "yup"
 
 export const routeUserRegisterGet = (req: Request, res: Response) => {
   res.render("user/register", {
@@ -44,7 +45,7 @@ export const routeUserRegisterPost = async function (
       }
     }
   } catch (e) {
-    errors = flattenErrors(e.inner)
+    errors = flattenErrors((e as ValidationError).inner)
   }
 
   res.render("user/register", {

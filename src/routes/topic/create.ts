@@ -6,6 +6,7 @@ import { flattenErrors } from "../../helpers/validation"
 import { topicSchema } from "../../schemas/topic"
 import { createTopic, isDupeTopic, isTooSoonTopic } from "../../services/topic"
 import routes from "../../helpers/routes"
+import { ValidationError } from "yup"
 
 const { connection, fetchOne, fetchAll } = require("../../helpers/mysql")
 
@@ -78,7 +79,7 @@ export default async (req: Request, res: Response, next: Function) => {
       }
     } catch (e) {
       console.log(e)
-      errors = flattenErrors(e.inner)
+      errors = flattenErrors((e as ValidationError).inner)
     }
   }
 

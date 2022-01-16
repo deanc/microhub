@@ -4,6 +4,7 @@ import CustomError from "../../helpers/error"
 import { hubSchema } from "../../schemas/hub"
 import { createHub } from "../../services/hub"
 import { connection, fetchOne } from "../../helpers/mysql"
+import { ValidationError } from "yup"
 
 export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
@@ -45,7 +46,7 @@ export default async (req: Request, res: Response, next: Function) => {
       }
     } catch (e) {
       console.log(e)
-      errors = flattenErrors(e.inner)
+      errors = flattenErrors((e as ValidationError).inner)
     }
   }
   console.log(errors)
