@@ -12,7 +12,7 @@
 
 {% block body %}
 <header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} {{ hub.name }} <em>/</em> Add Member</h1>
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}<img src="/lock.svg" class="lock" />{% endif %} {{ hub.name }} <em>/</em> Add Member</h1>
 </header>
 
 <h2>Add new member by username</h2>

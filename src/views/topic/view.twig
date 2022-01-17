@@ -12,7 +12,7 @@
 
 {% block body %}
 <header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} <a href="{{ url('hubView', {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a> <em>/</em> {{ topic.title }}</h1>
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}<img src="/lock.svg" class="lock" />{% endif %} <a href="{{ url('hubView', {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a> <em>/</em> {{ topic.title }}</h1>
 </header>
 
 {% if topic.closed %}
@@ -20,8 +20,10 @@
 {% endif %}
 
 <p>
-<strong>{{ topic.username }}</strong> <em class="s">/</em> {{ timeAgoInWords(topic.created, user.timzeone) }}<br />
-{{ topic.content|trim|raw }}
+  <strong>{{ topic.username }}</strong> <em class="s">/</em> 
+  {% if canEdit %}<a href="{{ url("topicUpdate", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}">edit</a>{% endif %} <em class="s">/</em>
+  {{ timeAgoInWords(topic.created, user.timzeone) }}<br />
+  {{ topic.content|trim|raw }}
 </p>
 
 <hr />

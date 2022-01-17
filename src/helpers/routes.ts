@@ -16,6 +16,13 @@ const routes: { [key: string]: Function } = {
     `/${hubPrefix}/${params.slug}-${params.hubId}/members`,
   topicCreate: (params: { hubId: number; slug: string }) =>
     `/${hubPrefix}/${params.slug}-${params.hubId}/new`,
+  topicUpdate: (params: {
+    hubId: number
+    hubSlug: string
+    topicId: number
+    topicSlug: string
+  }) =>
+    `/${hubPrefix}/${params.hubSlug}-${params.hubId}/${params.topicSlug}-${params.topicId}/update`,
   topicView: (params: {
     hubId: number
     hubSlug: string

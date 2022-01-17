@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { User } from "../../definitions/express"
 import CustomError from "../../helpers/error"
-import { canViewHub } from "../../helpers/permissions"
+import { canEditTopic, canViewHub } from "../../helpers/permissions"
 import routes from "../../helpers/routes"
 import { flattenErrors } from "../../helpers/validation"
 import { commentSchema } from "../../schemas/comment"
@@ -46,6 +46,8 @@ export default async (req: Request, res: Response, next: Function) => {
     `,
     [req.params.topic]
   )
+
+  const canEdit = await canEditTopic(topic, <User>req.user)
 
   topic.content = parseUserContent(topic.content)
 
@@ -122,5 +124,6 @@ export default async (req: Request, res: Response, next: Function) => {
     errors,
     data,
     csrfToken: req.csrfToken(),
+    canEdit,
   })
 }

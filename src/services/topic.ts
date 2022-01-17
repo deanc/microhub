@@ -1,6 +1,6 @@
 import { User } from "../definitions/express"
 import slugify from "slugify"
-const { connection, fetchOne } = require("../helpers/mysql")
+const { connection, fetchOne, update } = require("../helpers/mysql")
 
 export const createTopic = async (
   hubId: number,
@@ -50,6 +50,34 @@ export const isTooSoonTopic = async (
     )
     return result !== null
   } catch (e) {
+    return false
+  }
+}
+
+export const updateTopic = async (
+  topicId: number,
+  title: string,
+  content: string,
+  starred: number
+): Promise<boolean> => {
+  try {
+    const slug = slugify(title)
+    await update(
+      connection,
+      "topic",
+      {
+        title,
+        slug,
+        content,
+        starred,
+      },
+      {
+        id: topicId,
+      }
+    )
+    return true
+  } catch (e) {
+    console.log(e)
     return false
   }
 }

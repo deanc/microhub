@@ -35,6 +35,7 @@ import routeHubView from "./routes/hub/view"
 import routeHubRSS from "./routes/hub/rss"
 import routeTopicView from "./routes/topic/view"
 import routeTopicCreate from "./routes/topic/create"
+import routeTopicUpdate from "./routes/topic/update"
 import routeHubCreate from "./routes/hub/create"
 import routeHubLeave from "./routes/hub/leave"
 import routeHubMembers from "./routes/hub/members"
@@ -150,6 +151,17 @@ const main = async () => {
 
   app.get(`/${hubPrefix}/:hub-:id(\\d+)/new`, csrfProtection, routeTopicCreate)
   app.post(`/${hubPrefix}/:hub-:id(\\d+)/new`, csrfProtection, routeTopicCreate)
+
+  app.get(
+    `/${hubPrefix}/:hub-:id(\\d+)/:topic-:id(\\d+)/update`,
+    csrfProtection,
+    routeTopicUpdate
+  )
+  app.post(
+    `/${hubPrefix}/:hub-:id(\\d+)/:topic-:id(\\d+)/update`,
+    csrfProtection,
+    routeTopicUpdate
+  )
 
   app.get(
     `/${hubPrefix}/:hub-:id(\\d+)/:topic-:id(\\d+)`,

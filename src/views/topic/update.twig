@@ -1,0 +1,49 @@
+{% extends "shell.twig" %}
+
+{% block head %}
+{% if hub.accent_hex|length %}
+<style type="text/css">
+.s, nav em, h1 em {
+    color: #{{ hub.accent_hex }} !important;
+}
+</style>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}&#128274;{% endif %} <a href="{{ url('hubView', {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a> <em>/</em> update topic</h1>
+</header>
+
+
+<form action="{{ url("topicUpdate", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <div class="form-row">
+        <label>Title</label>
+        <input name="title" type="text" value="{{ data.title }}" />
+        <span class="error">{{ errors.title.join(",") }}</span>
+    </div>
+    <div class="form-row">
+        <label>Content</label>
+        <textarea name="content" rows="10">{{ data.content }}</textarea>
+        <span class="error">{{ errors.content.join(",") }}</span>
+    </div>
+    {% if isAdmin %}
+    <div class="form-row">
+      <label>Starred?</label>
+      <input type="radio" name="starred" value="1" {% if data.starred == 1 %} checked{% endif %} /> Yes
+      <input type="radio" name="starred" value="0" {% if data.starred == 0 or data.starred not defined %} checked{% endif %} /> No
+    </div>
+    {% else %}
+        <input type="hidden" name="starred" value="0" />
+    {% endif %}
+    <div class="submit-row">
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+
+<footer class="secondary">
+  
+</footer>
+{% endblock %}
