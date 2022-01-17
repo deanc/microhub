@@ -13,7 +13,7 @@
 {% block body %}
 
 <header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}<img src="/lock.svg" class="lock" />{% endif %} {{ hub.name }}</h1>
+  <h1><a href="/">&#8962;</a> <em>/</em> {% if not hub.public %}{% include "lock.twig" %}{% endif %} {{ hub.name }}</h1>
 </header>
 
 <p>{{ hub.description }}</p>

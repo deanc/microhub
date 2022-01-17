@@ -126,8 +126,14 @@ em.s {
 .lock {
   display: inline-block;
   max-height: 15px;
+  margin-bottom: -3px;
+  margin-right: .25em;
+  path {
+    fill: #000;
+  }
   h1 & {
     max-height: 20px;
+    margin-right: -.25em;
   }
 }
 
@@ -154,4 +160,5 @@ body.dark {
   hr {
     background: rgba(255, 255, 255, .5);
   }
+  .lock path { fill: #fff; }
 }
