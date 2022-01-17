@@ -53,6 +53,10 @@ export default async (req: Request, res: Response, next: Function) => {
   )
 
   // topics
+  let published = 1
+  if (isAdmin && req.query.published === "0") {
+    published = 0
+  }
   const topics = await fetchAll(
     connection,
     `
@@ -77,11 +81,11 @@ export default async (req: Request, res: Response, next: Function) => {
         ) AS sq2 ON sq2.topicid = t.id
         LEFT JOIN user AS u ON u.id = t.author
         WHERE 
-            t.hubid = ?
+            t.hubid = ? AND t.published = ?
         ORDER BY
           t.starred DESC, t.created DESC
        `,
-    [hub.id]
+    [hub.id, published]
   )
 
   res.render("hub/view", {

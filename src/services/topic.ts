@@ -58,7 +58,8 @@ export const updateTopic = async (
   topicId: number,
   title: string,
   content: string,
-  starred: number
+  starred: number,
+  published: number
 ): Promise<boolean> => {
   try {
     const slug = slugify(title)
@@ -70,6 +71,7 @@ export const updateTopic = async (
         slug,
         content,
         starred,
+        published,
       },
       {
         id: topicId,

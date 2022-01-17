@@ -58,8 +58,11 @@ export default async (req: Request, res: Response, next: Function) => {
     try {
       const isValid = await topicSchema.validate(data, { abortEarly: false })
 
-      // non-admins can't star
-      if (data.starred && !isAdmin) {
+      // non-admins can't star or publish
+      if (
+        (data.starred !== undefined || data.published !== undefined) &&
+        !isAdmin
+      ) {
         return next(new CustomError(401, "Invalid permissions"))
       }
 
@@ -68,7 +71,8 @@ export default async (req: Request, res: Response, next: Function) => {
           topic.id,
           data.title,
           data.content,
-          data.starred
+          data.starred,
+          data.published
         )
         console.log(result)
         const topicData = await fetchOne(
@@ -98,6 +102,7 @@ export default async (req: Request, res: Response, next: Function) => {
     topic,
     data,
     errors,
+    isAdmin,
     csrfToken: req.csrfToken(),
   })
 }

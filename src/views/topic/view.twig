@@ -22,6 +22,7 @@
 <p>
   <strong>{{ topic.username }}</strong> <em class="s">/</em> 
   {% if canEdit %}<a href="{{ url("topicUpdate", {"hubId": hub.id, "hubSlug": hub.slug, "topicId": topic.id, "topicSlug": topic.slug}) }}">edit</a>{% endif %} <em class="s">/</em>
+  {% if not topic.published %}unpublished <em class="s">/</em>{% endif %}
   {{ timeAgoInWords(topic.created, user.timzeone) }}<br />
   {{ topic.content|trim|raw }}
 </p>
