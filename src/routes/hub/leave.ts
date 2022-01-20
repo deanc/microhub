@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import CustomError from "../../helpers/error"
-import { connection, fetchOne } from "../../helpers/mysql"
-import { canViewHub } from "../../helpers/permissions"
+import { connection, fetchAll, fetchOne } from "../../helpers/mysql"
+import { canViewHub, isHubAdmin } from "../../helpers/permissions"
 import { User } from "../../definitions/express"
 import routes from "../../helpers/routes"
 
@@ -34,6 +34,20 @@ export default async (req: Request, res: Response, next: Function) => {
   const canView = await canViewHub(hub, <User>req.user)
   if (!canView) {
     return next(new CustomError(401, "Invalid permissions"))
+  }
+
+  const hubAdmins = await fetchAll(
+    connection,
+    `SELECT * FROM hub_user WHERE hubid = ? AND staff = 1`,
+    [hub.id]
+  )
+  if (hubAdmins.find((user: any) => user.id === req.user?.id)) {
+    return next(
+      new CustomError(
+        403,
+        "This hub only has one owner, contact an admin to help"
+      )
+    )
   }
 
   // handling new comment

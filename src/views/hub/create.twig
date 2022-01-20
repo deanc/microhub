@@ -17,7 +17,7 @@
     </div>
     <div class="form-row">
       <label>Description</label>
-      <textarea name="description" rows="3">{{ data.name }}</textarea>
+      <textarea name="description" rows="3">{{ data.description }}</textarea>
       {% if errors["description"]|length > 0 %}
         <div class="error">{{ errors["description"].join(", ") }}</div>
       {% endif %}

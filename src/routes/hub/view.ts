@@ -72,7 +72,6 @@ export default async (req: Request, res: Response, next: Function) => {
 
   const currentPage = req.query.page ? Number(req.query.page) : 1
   const pagination = new Pagination(totalTopics, currentPage, 30)
-  console.log(currentPage)
 
   const [lower, upper] = pagination.limits()
   const topics = await fetchAll(

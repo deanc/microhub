@@ -12,7 +12,7 @@ export const createHub = async (
     // create the hub
     const slug = slugify(name)
     const result = await connection.query(
-      "INSERT INTO hub (creator, name, description, slug, public, published, created, updated) VALUES (?, ?, ?, ?, 1, NOW(), NOW())",
+      "INSERT INTO hub (creator, name, description, slug, public, published, created, updated) VALUES (?, ?, ?, ?, 1, 1, NOW(), NOW())",
       [creator, name, description, slug, isPublic]
     )
 
@@ -22,6 +22,11 @@ export const createHub = async (
     await connection.query(
       "INSERT INTO hub_user (hubid, userid, staff) VALUES (?, ?, ?)",
       [hubId, creator, 1]
+    )
+
+    await connection.query(
+      "UPDATE user_log SET last_created_hub = NOW() WHERE userid = ?",
+      [creator]
     )
 
     return hubId

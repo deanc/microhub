@@ -4,7 +4,7 @@ import { userSchema } from "../schemas/user"
 import { connection, fetchOne } from "./mysql"
 import { mysqlToDate } from "./time"
 
-const isAdmin = (user: User): boolean => user?.roles.includes("ADMIN")
+export const isAdmin = (user: User): boolean => user?.roles.includes("ADMIN")
 
 export const canViewHub = async (hub: any, user: User): Promise<boolean> => {
   // admins can view all

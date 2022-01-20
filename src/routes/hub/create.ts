@@ -3,8 +3,9 @@ import { flattenErrors } from "../../helpers/validation"
 import CustomError from "../../helpers/error"
 import { hubSchema } from "../../schemas/hub"
 import { createHub } from "../../services/hub"
-import { connection, fetchOne } from "../../helpers/mysql"
+import { connection, fetchColumn, fetchOne } from "../../helpers/mysql"
 import { ValidationError } from "yup"
+import { isAdmin } from "../../helpers/permissions"
 
 export default async (req: Request, res: Response, next: Function) => {
   // data structures ready for a new comment
@@ -15,6 +16,18 @@ export default async (req: Request, res: Response, next: Function) => {
   if (!req.user) {
     return next(
       new CustomError(401, "Please create an account or log in to create a hub")
+    )
+  }
+
+  // check rate limit
+  const userLog = await fetchColumn(
+    connection,
+    "SELECT TIMESTAMPDIFF(HOUR, last_created_hub, NOW()) as diff FROM user_log WHERE userid = ?",
+    [req.user.id]
+  )
+  if (!isAdmin(req.user) && (!userLog || userLog.diff >= 24)) {
+    return next(
+      new CustomError(429, "Hubs can only be created once every 24 hours")
     )
   }
 
@@ -41,7 +54,7 @@ export default async (req: Request, res: Response, next: Function) => {
             "SELECT slug FROM hub WHERE id = ?",
             [hubId]
           )
-          return res.redirect(`/m/${hub.slug}-${hubId}`)
+          return res.redirect(`/hub/${hub.slug}-${hubId}`)
         }
       }
     } catch (e) {
