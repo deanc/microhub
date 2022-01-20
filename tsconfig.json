@@ -5,7 +5,15 @@
     "outDir": "dist/",
     "allowJs": true,
     "strict": true,
+    "target": "es2017",
+    "esModuleInterop": true,
   },
+//   "compilerOptions": {
+//     "module": "commonjs",
+//     "experimentalDecorators": true,
+    
+//     "moduleResolution": "node",
+// }
   "ts-node": {
       "files": true
   },

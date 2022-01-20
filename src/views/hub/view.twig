@@ -50,6 +50,10 @@
     <p>No topics yet</p>
 {% endfor %}
 
+<p>
+    {{ pagination|raw }}
+</p>
+
     <hr />
     <p>
 {% if staff|length > 0 %}

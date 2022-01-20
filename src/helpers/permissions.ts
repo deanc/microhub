@@ -58,7 +58,7 @@ export const canEditTopic = async (
   topic: any,
   user: User
 ): Promise<boolean> => {
-  const isAuthor = topic.author === user.id
+  const isAuthor = topic.author === user?.id
   const isWithinFiveMinutes = differenceInMinutes(
     mysqlToDate(topic.created),
     new Date()

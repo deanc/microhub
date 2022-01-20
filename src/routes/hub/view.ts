@@ -8,6 +8,7 @@ import {
 import CustomError from "../../helpers/error"
 import { User } from "../../definitions/express"
 import { canViewHub, isHubAdmin } from "../../helpers/permissions"
+import Pagination from "../../helpers/pagination"
 
 export default async (req: Request, res: Response, next: Function) => {
   // meta-data for hub
@@ -57,6 +58,23 @@ export default async (req: Request, res: Response, next: Function) => {
   if (isAdmin && req.query.published === "0") {
     published = 0
   }
+
+  const totalTopics = await fetchColumn(
+    connection,
+    `
+    SELECT
+      COUNT(*) AS total
+    FROM topic as t 
+    WHERE t.hubid = ? AND t.published = ?
+  `,
+    [hub.id, published]
+  )
+
+  const currentPage = req.query.page ? Number(req.query.page) : 1
+  const pagination = new Pagination(totalTopics, currentPage, 30)
+  console.log(currentPage)
+
+  const [lower, upper] = pagination.limits()
   const topics = await fetchAll(
     connection,
     `
@@ -84,6 +102,7 @@ export default async (req: Request, res: Response, next: Function) => {
             t.hubid = ? AND t.published = ?
         ORDER BY
           t.starred DESC, t.created DESC
+          LIMIT ${lower}, ${upper}
        `,
     [hub.id, published]
   )
@@ -94,5 +113,6 @@ export default async (req: Request, res: Response, next: Function) => {
     staff,
     totalMembers,
     isAdmin,
+    pagination: pagination.render(),
   })
 }
