@@ -6,6 +6,7 @@ const routes: { [key: string]: Function } = {
   userRegister: () => "/u/register",
   userAccount: () => "/u/account",
   hubCreate: () => `/hub/create`,
+  hubList: () => `/hubs`,
   hubView: (params: { hubId: number; slug: string }) =>
     `/${hubPrefix}/${params.slug}-${params.hubId}`,
   hubLeave: (params: { hubId: number; slug: string }) =>

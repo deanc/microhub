@@ -1,0 +1,30 @@
+{% extends "shell.twig" %}
+
+{% block head %}
+{% if hub.accent_hex|length %}
+<style type="text/css">
+.s, nav em, h1 em {
+    color: #{{ hub.accent_hex }} !important;
+}
+</style>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+<header class="secondary">
+  <h1><a href="/">&#8962;</a> <em>/</em> public hubs</h1>
+</header>
+
+<ul>
+{% for hub in hubs %}
+    <li><a href="{{ url("hubView", {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
+{% endfor %}
+</ul>
+
+{{ pagination }}
+
+
+<footer class="secondary">
+  
+</footer>
+{% endblock %}
