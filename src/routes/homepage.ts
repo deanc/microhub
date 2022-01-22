@@ -2,23 +2,26 @@ import { Request, Response } from "express"
 import { connection, fetchAll } from "../helpers/mysql"
 
 export default async (req: Request, res: Response) => {
-  let privateHubs = []
+  let myHubs = []
 
   if (req.user) {
-    privateHubs = await fetchAll(
+    myHubs = await fetchAll(
       connection,
       `
         SELECT
-          h.id, h.name, h.slug, h.public
+          h.id, h.name, h.slug, h.public, hu.staff
         FROM
           hub_user AS hu
         LEFT JOIN
           hub AS h ON h.id = hu.hubid
         WHERE
-          hu.userid = ?
+          h.published = 1 AND hu.userid = ?
+        ORDER BY 
+          hu.staff DESC, h.name ASC
       `,
       [req.user.id]
     )
+    console.log(req.user.id)
   }
 
   const popularHubs = await fetchAll(
@@ -31,7 +34,7 @@ export default async (req: Request, res: Response) => {
     LEFT JOIN
       hub AS h ON h.id = t.hubid
     WHERE
-      h.public = 1
+      h.published = 1 AND h.public = 1
     GROUP BY
       t.hubid
     ORDER BY
@@ -42,7 +45,7 @@ export default async (req: Request, res: Response) => {
 
   res.render("homepage", {
     message: "Hello World",
-    privateHubs,
+    myHubs,
     popularHubs,
   })
 }

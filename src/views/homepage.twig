@@ -2,7 +2,7 @@
 
 {% block body %}
 <header class="secondary">
-  <h1><a href="/">&#8962;</a> <em>/</em> welcome to microhub (alpha)</h1>
+  <h1><a href="/">&#8962;</a> <em>/</em> welcome to microhub <sup>(alpha)</sup></h1>
 </header>
 
 <p>Microhub allows you to create small micro-communities around any topic, whether it be your local football club or a particular interest group. "Hubs" can be public or private.</p>
@@ -18,20 +18,22 @@
 
 <hr />
 
-{% if privateHubs|length > 0 %}
+{% if myHubs|length > 0 %}
 <h2>my hubs</h2>
   <ul>
-    {% for hub in privateHubs %}
-      <li>{% if not hub.public %}{% include "lock.twig" %}{% endif %}<a class="preload" href="{{ url("hubView", {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
+    {% for hub in myHubs %}
+      <li>{% if not hub.public %}{% include "lock.twig" %}{% endif %}<a class="preload" href="{{ url("hubView", {"hubId": hub.id, "slug": hub.slug}) }}">{{ hub.name }}</a>{% if hub.staff %} (staff){% endif %}</li>
     {% endfor %}
   </ul>
 {% endif %}
 
 <h2>popular public hubs</h2>
-  <ul>
-    {% for hub in popularHubs %}
-      <li><a class="preload" href="{{ url("hubView", {"hubId": hub.hubid, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
-    {% endfor %}
-  </ul>
+<ul>
+  {% for hub in popularHubs %}
+    <li><a class="preload" href="{{ url("hubView", {"hubId": hub.hubid, "slug": hub.slug}) }}">{{ hub.name }}</a></li>
+  {% endfor %}
+</ul>
+
+<p><a href="{{ url("hubList") }}">view all public hubs</a></p>
 
 {% endblock %}

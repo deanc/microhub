@@ -12,6 +12,11 @@ export const canViewHub = async (hub: any, user: User): Promise<boolean> => {
     return true
   }
 
+  // nobody can view if it's unpublished
+  if (!hub.published) {
+    return false
+  }
+
   // other users need normal check
   if (!hub.public) {
     if (!user) {
