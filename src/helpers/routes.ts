@@ -13,6 +13,8 @@ const routes: { [key: string]: Function } = {
     `/${hubPrefix}/${params.slug}-${params.hubId}/leave`,
   hubRSS: (params: { hubId: number; slug: string }) =>
     `/${hubPrefix}/${params.slug}-${params.hubId}/rss`,
+  hubExport: (params: { hubId: number; slug: string }) =>
+    `/${hubPrefix}/${params.slug}-${params.hubId}/export`,
   hubMembers: (params: { hubId: number; slug: string }) =>
     `/${hubPrefix}/${params.slug}-${params.hubId}/members`,
   topicCreate: (params: { hubId: number; slug: string }) =>

@@ -23,6 +23,7 @@
     <a href="{{ url("topicCreate", {"hubId": hub.id, "slug": hub.slug}) }}">Create topic</a> <em class="s">/</em>
     {% if not hub.public %}<a href="{{ url("hubLeave", {"hubId": hub.id, "slug": hub.slug}) }}">Leave hub</a> <em class="s">/</em>{% endif %}
     {% if isAdmin and not hub.public %}<a href="{{ url("hubMembers", {"hubId": hub.id, "slug": hub.slug}) }}">Add members</a> <em class="s">/</em>{% endif %}
+    {% if isAdmin %}<a href="{{ url("hubExport", {"hubId": hub.id, "slug": hub.slug}) }}">Export data</a> <em class="s">/</em>{% endif %}
     <a href="{{ url("hubRSS", {"hubId": hub.id, "slug": hub.slug}) }}">RSS</a></p>
 
 <hr />

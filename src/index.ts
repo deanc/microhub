@@ -34,6 +34,7 @@ import routeUserAccount from "./routes/user/account"
 import routeHubView from "./routes/hub/view"
 import routeHubList from "./routes/hub/list"
 import routeHubRSS from "./routes/hub/rss"
+import routeHubExport from "./routes/hub/export"
 import routeTopicView from "./routes/topic/view"
 import routeTopicCreate from "./routes/topic/create"
 import routeTopicUpdate from "./routes/topic/update"
@@ -133,6 +134,13 @@ const main = async () => {
   app.get("/", routeHomepage)
   app.get(`/${hubPrefix}/:hub-:id(\\d+)`, routeHubView)
   app.get(`/${hubPrefix}/:hub-:id(\\d+)/rss`, routeHubRSS)
+
+  app.get(`/${hubPrefix}/:hub-:id(\\d+)/export`, csrfProtection, routeHubExport)
+  app.post(
+    `/${hubPrefix}/:hub-:id(\\d+)/export`,
+    csrfProtection,
+    routeHubExport
+  )
 
   app.get("/hubs", routeHubList)
 
